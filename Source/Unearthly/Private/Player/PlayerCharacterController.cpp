@@ -14,6 +14,10 @@ void APlayerCharacterController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::Move);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::Look);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::Jump);
+	EnhancedInputComponent->BindAction(HandleAction, ETriggerEvent::Started, this, &APlayerCharacterController::HandleButtonPressed);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterController::AttackButtonPressed);
+	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &APlayerCharacterController::RollButtonPressed);
+	EnhancedInputComponent->BindAction(LockAction, ETriggerEvent::Started, this, &APlayerCharacterController::LockButtonPressed);
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -25,10 +29,14 @@ void APlayerCharacterController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(CharacterContext, 0);
 	}
+	PlayerCharacter = Cast<APlayerCharacter>(GetCharacter());
 }
 
 void APlayerCharacterController::Move(const FInputActionValue& InputActionValue)
 {
+	// TODO: Make Additive Attacks instead of pinning
+	if(PlayerCharacter->GetActionState() == EActionState::EAS_Attacking) return;
+	
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
@@ -55,8 +63,23 @@ void APlayerCharacterController::Look(const FInputActionValue& InputActionValue)
 
 void APlayerCharacterController::Jump()
 {
-	if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetCharacter()))
-	{
-		PlayerCharacter->Jump();
-	}
+	if (PlayerCharacter) PlayerCharacter->Jump();
+}
+
+void APlayerCharacterController::HandleButtonPressed()
+{
+	if (PlayerCharacter) PlayerCharacter->Equip();
+}
+
+void APlayerCharacterController::AttackButtonPressed()
+{
+	if (PlayerCharacter) PlayerCharacter->Attack();
+}
+
+void APlayerCharacterController::RollButtonPressed()
+{
+}
+
+void APlayerCharacterController::LockButtonPressed()
+{
 }

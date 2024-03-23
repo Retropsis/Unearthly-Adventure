@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerCharacterController.generated.h"
 
+class APlayerCharacter;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -20,7 +21,12 @@ class UNEARTHLY_API APlayerCharacterController : public APlayerController
 public:
 	virtual void SetupInputComponent() override;
 
+protected:
+	virtual void BeginPlay() override;
+
 private:
+	TObjectPtr<APlayerCharacter> PlayerCharacter;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
 	TObjectPtr<UInputMappingContext> CharacterContext;
 
@@ -33,10 +39,23 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
 	TObjectPtr<UInputAction> JumpAction;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
+	TObjectPtr<UInputAction> HandleAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
+	TObjectPtr<UInputAction> AttackAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
+	TObjectPtr<UInputAction> RollAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Chatacter|Input")
+	TObjectPtr<UInputAction> LockAction;
+	
 	void Move(const FInputActionValue& InputActionValue);
 	void Look(const FInputActionValue& InputActionValue);
 	void Jump();
-
-protected:
-	virtual void BeginPlay() override;
+	void HandleButtonPressed();
+	void AttackButtonPressed();
+	void RollButtonPressed();
+	void LockButtonPressed();
 };
