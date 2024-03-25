@@ -3,6 +3,7 @@
 #include "World/WorldItem.h"
 
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/PlayerCharacter.h"
 
 AWorldItem::AWorldItem()
@@ -63,3 +64,13 @@ float AWorldItem::TransformedCos()
 	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
 }
 
+/*
+* SFX
+*/
+void AWorldItem::PlayPickupSound()
+{
+	if(IsValid(PickupSound))
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation());
+	}
+}

@@ -6,6 +6,7 @@
 #include "World/WorldItem.h"
 #include "Handled.generated.h"
 
+class UBoxComponent;
 /**
  * 
  */
@@ -15,13 +16,34 @@ class UNEARTHLY_API AHandled : public AWorldItem
 	GENERATED_BODY()
 
 public:
+	AHandled();
 	void Equip(USceneComponent* InParent, FName InSocketName);
+	void AttachHandledTo(USceneComponent* InParent, FName InSocketName);
 
 protected:
-	virtual void OnBeginOverlap(
-	UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	virtual void BeginPlay() override;
+	
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	virtual void OnEndOverlap(
-		UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	
+	/*
+	 * Collision Box
+	 */
+	UPROPERTY(VisibleAnywhere, Category="Weapon|Collision")
+	TObjectPtr<UBoxComponent> CollisionBox;
+	
+	UPROPERTY(VisibleAnywhere, Category="Weapon|Collision")
+	TObjectPtr<USceneComponent> BoxTraceStart;
+	
+	UPROPERTY(VisibleAnywhere, Category="Weapon|Collision")
+	TObjectPtr<USceneComponent> BoxTraceEnd;
+	
+	UFUNCTION()
+	virtual void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
 };

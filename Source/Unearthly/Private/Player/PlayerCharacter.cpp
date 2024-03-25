@@ -3,6 +3,7 @@
 #include "Player/PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Character/CharacterAnimInstance.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "World/Handled.h"
@@ -50,6 +51,23 @@ void APlayerCharacter::Equip()
 	{
 		OverlappingHandled->Equip(GetMesh(), FName("LeftHandSocket"));
 		CharacterState = ECharacterState::ECS_Equipped;
+		EquippedHandled = OverlappingHandled;
+		OverlappingItem = nullptr;
+	}
+	else
+	{
+		if(ShouldSheathe())
+		{
+			if(CharacterAnimInstance) CharacterAnimInstance->PlayEquipMontage(FName("Unequip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+			ActionState = EActionState::EAS_Equipping;
+		}
+		else if(ShouldDraw())
+		{
+			if(CharacterAnimInstance) CharacterAnimInstance->PlayEquipMontage(FName("Equip"));
+			CharacterState = ECharacterState::ECS_Equipped;
+			ActionState = EActionState::EAS_Equipping;
+		}
 	}
 }
 
@@ -66,5 +84,34 @@ void APlayerCharacter::Attack()
 bool APlayerCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Equipped;
+}
+
+bool APlayerCharacter::ShouldSheathe()
+{
+	return CharacterState == ECharacterState::ECS_Equipped && ActionState == EActionState::EAS_Unoccupied;
+}
+
+bool APlayerCharacter::ShouldDraw()
+{
+	return CharacterState == ECharacterState::ECS_Unequipped && ActionState == EActionState::EAS_Unoccupied && EquippedHandled;
+}
+
+void APlayerCharacter::SheatheHandled()
+{
+	if(IsValid(EquippedHandled)) EquippedHandled->AttachHandledTo(GetMesh(), FName("SpineSocket"));
+	// TODO: Could cut Equip Montage early here, plus additive
+	// ActionState = EActionState::EAS_Unoccupied;
+}
+
+void APlayerCharacter::DrawHandled()
+{
+	if(IsValid(EquippedHandled)) EquippedHandled->AttachHandledTo(GetMesh(), FName("LeftHandSocket"));
+	// TODO: Could cut Equip Montage early here, plus additive
+	// ActionState = EActionState::EAS_Unoccupied;
+}
+
+void APlayerCharacter::SetHandledCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if(IsValid(EquippedHandled) && EquippedHandled->GetCollisionBox()) EquippedHandled->GetCollisionBox()->SetCollisionEnabled(CollisionEnabled);
 }
 

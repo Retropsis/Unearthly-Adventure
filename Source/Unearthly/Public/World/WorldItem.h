@@ -23,9 +23,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USphereComponent> OverlapSphere;
+	
+	UPROPERTY(EditDefaultsOnly, Category="World|SFX")
+	TObjectPtr<USoundBase> PickupSound;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void PlayPickupSound();
 
 	UFUNCTION()
 	virtual void OnBeginOverlap(

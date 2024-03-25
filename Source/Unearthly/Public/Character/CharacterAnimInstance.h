@@ -21,12 +21,25 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	//~ Action Mapping Montages
+	//~ Attack
 	void PlayAttackMontage(const FName SectionName);
 	UFUNCTION(BlueprintCallable) void AttackEnd();
 
 	UPROPERTY(EditDefaultsOnly, Category="Character|Montages")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	//~ Equip
+	void PlayEquipMontage(const FName SectionName);
+	
+	UPROPERTY(EditDefaultsOnly, Category="Character|Montages")
+	TObjectPtr<UAnimMontage> EquipMontage;
+	
+	UFUNCTION(BlueprintCallable) void SheatheHandled();
+	UFUNCTION(BlueprintCallable) void DrawHandled();
+	UFUNCTION(BlueprintCallable) void EquipEnd();
 	//~ Action Mapping Montages
+
+	UFUNCTION(BlueprintCallable) void SetHandledCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 	
 	UPROPERTY(BlueprintReadOnly, Category="Character|Movement")
 	TObjectPtr<APlayerCharacter> PlayerCharacter;

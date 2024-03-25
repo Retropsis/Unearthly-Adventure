@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class AHandled;
 class UCharacterAnimInstance;
 class AWorldItem;
 class USpringArmComponent;
@@ -25,9 +26,17 @@ public:
 	//~ Action Mappings
 	void Equip();
 	void Attack();
-	bool CanAttack();
 	//~ Action Mappings
 
+	bool CanAttack();
+	bool ShouldSheathe();
+	bool ShouldDraw();
+	
+	void SheatheHandled();
+	void DrawHandled();
+
+	void SetHandledCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+	
 protected:
 	virtual void BeginPlay() override;
 	
@@ -43,6 +52,9 @@ private:
 	
 	UPROPERTY(VisibleInstanceOnly)
 	TObjectPtr<AWorldItem> OverlappingItem;
+	
+	UPROPERTY(VisibleInstanceOnly)
+	TObjectPtr<AHandled> EquippedHandled;
 
 	TObjectPtr<UCharacterAnimInstance> CharacterAnimInstance;
 	

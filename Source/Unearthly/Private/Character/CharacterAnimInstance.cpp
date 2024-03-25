@@ -42,3 +42,32 @@ void UCharacterAnimInstance::AttackEnd()
 {
 	PlayerCharacter->SetActionState(EActionState::EAS_Unoccupied);
 }
+
+void UCharacterAnimInstance::PlayEquipMontage(const FName SectionName)
+{
+	if (EquipMontage)
+	{
+		Montage_Play(EquipMontage);
+		Montage_JumpToSection(SectionName);
+	}
+}
+
+void UCharacterAnimInstance::SheatheHandled()
+{
+	PlayerCharacter->SheatheHandled();
+}
+
+void UCharacterAnimInstance::DrawHandled()
+{
+	PlayerCharacter->DrawHandled();
+}
+
+void UCharacterAnimInstance::EquipEnd()
+{
+	PlayerCharacter->SetActionState(EActionState::EAS_Unoccupied);
+}
+
+void UCharacterAnimInstance::SetHandledCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled)
+{
+	PlayerCharacter->SetHandledCollisionEnabled(CollisionEnabled);
+}
