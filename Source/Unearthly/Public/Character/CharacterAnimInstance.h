@@ -22,14 +22,14 @@ public:
 
 	//~ Action Mapping Montages
 	//~ Attack
-	void PlayAttackMontage(const FName SectionName);
+	void PlayAttackMontage(const FName& SectionName);
 	UFUNCTION(BlueprintCallable) void AttackEnd();
 
 	UPROPERTY(EditDefaultsOnly, Category="Character|Montages")
 	TObjectPtr<UAnimMontage> AttackMontage;
 	
 	//~ Equip
-	void PlayEquipMontage(const FName SectionName);
+	void PlayEquipMontage(const FName& SectionName);
 	
 	UPROPERTY(EditDefaultsOnly, Category="Character|Montages")
 	TObjectPtr<UAnimMontage> EquipMontage;

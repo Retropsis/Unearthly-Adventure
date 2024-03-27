@@ -29,7 +29,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	CharacterState = PlayerCharacter->GetCharacterState();
 }
 
-void UCharacterAnimInstance::PlayAttackMontage(const FName SectionName)
+void UCharacterAnimInstance::PlayAttackMontage(const FName& SectionName)
 {
 	if (AttackMontage)
 	{
@@ -43,7 +43,7 @@ void UCharacterAnimInstance::AttackEnd()
 	PlayerCharacter->SetActionState(EActionState::EAS_Unoccupied);
 }
 
-void UCharacterAnimInstance::PlayEquipMontage(const FName SectionName)
+void UCharacterAnimInstance::PlayEquipMontage(const FName& SectionName)
 {
 	if (EquipMontage)
 	{

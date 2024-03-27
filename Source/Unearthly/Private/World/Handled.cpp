@@ -3,6 +3,7 @@
 #include "World/Handled.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
+#include "Interaction/HitInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 AHandled::AHandled()
@@ -46,9 +47,19 @@ void AHandled::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
 	FHitResult BoxHit;
+	
 	UKismetSystemLibrary::BoxTraceSingle(this, Start, End, FVector(5.f, 5.f, 5.f),
 		BoxTraceStart->GetComponentRotation(), TraceTypeQuery1, false,
 		ActorsToIgnore, EDrawDebugTrace::ForDuration, BoxHit, true);
+
+	if (BoxHit.GetActor())
+	{
+		if (IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
+		{
+			HitInterface->GetHit(BoxHit.ImpactPoint);
+		}
+	}
+	
 }
 
 void AHandled::Equip(USceneComponent* InParent, FName InSocketName)
