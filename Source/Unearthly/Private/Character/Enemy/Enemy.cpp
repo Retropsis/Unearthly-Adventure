@@ -2,6 +2,8 @@
 
 #include "Character/Enemy/Enemy.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AEnemy::AEnemy()
@@ -11,13 +13,13 @@ AEnemy::AEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+	HealthBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarComponent"));
+	HealthBarComponent->SetupAttachment(GetRootComponent());
 }
 
-void AEnemy::GetHit(const FVector& ImpactPoint)
+void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 {
-	// DrawDebugSphere(GetWorld(), ImpactPoint, 25.f, 12, FColor::Red, false, 5.f);
-	PlayHitReactMontage(FName("FromFront"));
-
 	const FVector Forward = GetActorForwardVector();
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
@@ -31,12 +33,28 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 		Theta *= -1.f;
 	}
 
+	FName Section("FromBack");
+	if (Theta >= -45.f && Theta < 45.f) Section = FName("FromFront");
+	else if (Theta >= -135.f && Theta < -45.f) Section = FName("FromLeft");
+	else if (Theta >= 45.f && Theta < 135.f) Section = FName("FromRight");
+
+	GEngine->AddOnScreenDebugMessage(12345, 15.f, FColor::Green, FString::Printf(TEXT("%s : %f"), *Section.ToString(), Theta));
+	
+	PlayHitReactMontage(Section);
+
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f,
-		2.f, FLinearColor::Red, 5.f);
+	                                     2.f, FLinearColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f,
-		2.f, FLinearColor::Green, 5.f);
+	                                     2.f, FLinearColor::Green, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 60.f,
-		2.f, FLinearColor::Blue, 5.f);
+	                                     2.f, FLinearColor::Blue, 5.f);
+}
+
+void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
+{
+	DirectionalHitReact(ImpactPoint);
+	if(IsValid(ImpactSound)) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, ImpactPoint);
+	if(ImpactEffect) UGameplayStatics::SpawnEmitterAtLocation(this, ImpactEffect, ImpactPoint);
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)

@@ -112,6 +112,10 @@ void APlayerCharacter::DrawHandled()
 
 void APlayerCharacter::SetHandledCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
 {
-	if(IsValid(EquippedHandled) && EquippedHandled->GetCollisionBox()) EquippedHandled->GetCollisionBox()->SetCollisionEnabled(CollisionEnabled);
+	if(IsValid(EquippedHandled) && EquippedHandled->GetCollisionBox())
+	{
+		EquippedHandled->GetCollisionBox()->SetCollisionEnabled(CollisionEnabled);
+		EquippedHandled->IgnoreActors.Empty();
+	};
 }
 

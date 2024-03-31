@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class UCharacterAttribute;
+class UAttributeComponent;
+
 UCLASS()
 class UNEARTHLY_API ABaseCharacter : public ACharacter
 {
@@ -18,4 +21,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCharacterAttribute> CharacterAttribute;
+
 };

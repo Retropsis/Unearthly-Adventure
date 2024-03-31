@@ -44,22 +44,22 @@ void AHandled::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	const FVector Start = BoxTraceStart->GetComponentLocation();
 	const FVector End = BoxTraceEnd->GetComponentLocation();
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(this);
+	IgnoreActors.Add(this);
 	FHitResult BoxHit;
 	
 	UKismetSystemLibrary::BoxTraceSingle(this, Start, End, FVector(5.f, 5.f, 5.f),
 		BoxTraceStart->GetComponentRotation(), TraceTypeQuery1, false,
-		ActorsToIgnore, EDrawDebugTrace::ForDuration, BoxHit, true);
+		IgnoreActors, EDrawDebugTrace::ForDuration, BoxHit, true);
 
 	if (BoxHit.GetActor())
 	{
-		if (IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
+		if (const IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
 		{
-			HitInterface->GetHit(BoxHit.ImpactPoint);
+			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
 		}
+		IgnoreActors.AddUnique(BoxHit.GetActor());
+		CreateFields(BoxHit.ImpactPoint);
 	}
-	
 }
 
 void AHandled::Equip(USceneComponent* InParent, FName InSocketName)

@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USphereComponent> OverlapSphere;
 	
-	UPROPERTY(EditDefaultsOnly, Category="World|SFX")
+	UPROPERTY(EditDefaultsOnly, Category="WorldItem|SFX")
 	TObjectPtr<USoundBase> PickupSound;
 
 protected:
@@ -42,13 +42,13 @@ protected:
 
 	EItemState ItemState = EItemState::EIS_Idling;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="World|VFX")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="WorldItem|VFX")
 	float Amplitude = 0.25f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="World|VFX")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="WorldItem|VFX")
 	float TimeConstant = 5.f;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="World|VFX")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="WorldItem|VFX")
 	float RunningTime = 0.f;
 
 	UFUNCTION(BlueprintPure)

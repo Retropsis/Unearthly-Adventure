@@ -7,6 +7,7 @@
 #include "Interaction/HitInterface.h"
 #include "Enemy.generated.h"
 
+class UWidgetComponent;
 /**
  * 
  */
@@ -17,10 +18,17 @@ class UNEARTHLY_API AEnemy : public ABaseCharacter, public IHitInterface
 
 public:
 	AEnemy();
+	void DirectionalHitReact(const FVector& ImpactPoint);
 
 	//~ Hit Interface
-	virtual void GetHit(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	//~ Hit Interface
+
+	UPROPERTY(EditAnywhere, Category="Character|Sound")
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere, Category="Character|VFX")
+	TObjectPtr<UParticleSystem> ImpactEffect;
 
 private:
 	//~ Montages
@@ -28,4 +36,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Character|Montages")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> HealthBarComponent;
 };

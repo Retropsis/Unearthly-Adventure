@@ -20,6 +20,8 @@ public:
 	void Equip(USceneComponent* InParent, FName InSocketName);
 	void AttachHandledTo(USceneComponent* InParent, FName InSocketName);
 
+	TArray<TObjectPtr<AActor>> IgnoreActors;
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -43,6 +45,12 @@ protected:
 	UFUNCTION()
 	virtual void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	/*
+	 * Destruction
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateFields(const FVector& FieldLocation);
 
 public:
 	FORCEINLINE UBoxComponent* GetCollisionBox() const { return CollisionBox; }
